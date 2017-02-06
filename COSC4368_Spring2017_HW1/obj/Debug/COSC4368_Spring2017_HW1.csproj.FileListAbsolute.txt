@@ -4,3 +4,9 @@ C:\Users\chadh\Desktop\COSC4368_Spring2017_HW1\COSC4368_Spring2017_HW1\bin\Debug
 C:\Users\chadh\Desktop\COSC4368_Spring2017_HW1\COSC4368_Spring2017_HW1\obj\Debug\COSC4368_Spring2017_HW1.csprojResolveAssemblyReference.cache
 C:\Users\chadh\Desktop\COSC4368_Spring2017_HW1\COSC4368_Spring2017_HW1\obj\Debug\COSC4368_Spring2017_HW1.exe
 C:\Users\chadh\Desktop\COSC4368_Spring2017_HW1\COSC4368_Spring2017_HW1\obj\Debug\COSC4368_Spring2017_HW1.pdb
+C:\Users\chadh\Documents\GitHub\COSC4368_Spring2017_HW1\COSC4368_Spring2017_HW1\bin\Debug\COSC4368_Spring2017_HW1.exe.config
+C:\Users\chadh\Documents\GitHub\COSC4368_Spring2017_HW1\COSC4368_Spring2017_HW1\obj\Debug\COSC4368_Spring2017_HW1.exe
+C:\Users\chadh\Documents\GitHub\COSC4368_Spring2017_HW1\COSC4368_Spring2017_HW1\obj\Debug\COSC4368_Spring2017_HW1.pdb
+C:\Users\chadh\Documents\GitHub\COSC4368_Spring2017_HW1\COSC4368_Spring2017_HW1\bin\Debug\COSC4368_Spring2017_HW1.exe
+C:\Users\chadh\Documents\GitHub\COSC4368_Spring2017_HW1\COSC4368_Spring2017_HW1\bin\Debug\COSC4368_Spring2017_HW1.pdb
+C:\Users\chadh\Documents\GitHub\COSC4368_Spring2017_HW1\COSC4368_Spring2017_HW1\obj\Debug\COSC4368_Spring2017_HW1.csprojResolveAssemblyReference.cache
