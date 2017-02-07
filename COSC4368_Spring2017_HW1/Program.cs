@@ -29,12 +29,9 @@ class Program
 
         Console.WriteLine("Generation: " + generationCounter + "\n");
         GenerationManager genManager = new GenerationManager();
-        Chromosome[] generation = genManager.CurrentGen;
+        //Chromosome[] generation = genManager.CurrentGen;
 
-        for (int i = 0; i < generation.Length; i++)
-        {
-            Console.WriteLine("\t" + "Chromosome " + (i) + ":\t" + generation[i].ChromosomeBits + "\t|\tFitness: " + generation[i].GetFitnessValue());
-        }
+        PrintGeneration(genManager.CurrentGen);
 
         Console.WriteLine();    //  Create new line for neatness
 
@@ -87,5 +84,14 @@ class Program
         }*/
 
         Console.ReadLine();
+    }
+    
+    //  Displays the stats for the current generation
+    static void PrintGeneration(Chromosome[] generation)
+    {
+        for (int i = 0; i < generation.Length; i++)
+        {
+            Console.WriteLine("\t" + "Chromosome " + (i) + ":\t" + generation[i].ChromosomeBits + "\t|\tFitness: " + generation[i].GetFitnessValue());
+        }
     }
 }
