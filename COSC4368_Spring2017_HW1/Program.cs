@@ -64,11 +64,12 @@ class Program
             // iterate
         }
 
+        //  test crossover
         ChromosomePair parents;
         parents.parent1 = genManager.CurrentGen[0];
         parents.parent2 = genManager.CurrentGen[1];
 
-        genManager.CrossoverChromosomes(parents);
+        parents = genManager.CrossoverChromosomes(parents);
 
         /*Console.WriteLine("Pair Matches");
 

@@ -23,7 +23,11 @@ public class GenerationManager
         CurrentGen = new Chromosome[Program.PopulationSize];
         for (int i = 0; i < Program.PopulationSize; i++)
         {
+            //  Initialize chromosome objects
             CurrentGen[i] = new Chromosome();
+
+            //  Generate initial chromosomes with random bits
+            CurrentGen[i].GenerateRandomBits();
         }
     }
 
