@@ -7,21 +7,21 @@ using System.Threading.Tasks;
 class Program
 {
     //  User-assigned Variables
-    public static int populationSize = 20;
-    public static int chromosomeBitLength = 10;
-    public static string targetChromosomeBits = "1010101010";
-    public static int targetFitnessValue = 10;
-    public static int crossoverProbability = 70;
+    public static int PopulationSize = 20;
+    public static int ChromosomeBitLength = 10;
+    public static string TargetChromosomeBits = "1010101010";
+    public static int TargetFitnessValue = 10;
+    public static int CrossoverPercentage = 70;
 
     public static void Main(string[] args)
     {
         //  Print initial conditions
         Console.WriteLine("[User-defined Parameters]" + "\n"
-            + "Population size:\t\t" + populationSize + "\n"
-            + "Chromosome Bit Length:\t\t" + chromosomeBitLength + "\n"
-            + "Target chromosome:\t\t" + targetChromosomeBits + "\n"
-            + "Target chromosome fitness:\t" + targetFitnessValue + "\n"
-            + "Crossover probability:\t\t" + crossoverProbability + "%\n");
+            + "Population size:\t\t" + PopulationSize + "\n"
+            + "Chromosome Bit Length:\t\t" + ChromosomeBitLength + "\n"
+            + "Target chromosome:\t\t" + TargetChromosomeBits + "\n"
+            + "Target chromosome fitness:\t" + TargetFitnessValue + "\n"
+            + "Crossover probability:\t\t" + CrossoverPercentage + "%\n");
 
         //  Initialize generation manager
         GenerationManager genManager = new GenerationManager();
@@ -39,8 +39,8 @@ class Program
         for (int i = 0; i < genManager.CurrentGen.Length; i++)
         {
             //  If there exist a chromosome that matches our target chromosome OR has the target fitness or better, break from for loop.
-            if (genManager.CurrentGen[i].ChromosomeBits.Equals(targetChromosomeBits, StringComparison.OrdinalIgnoreCase)
-                || genManager.CurrentGen[i].GetFitnessValue() >= targetFitnessValue)
+            if (genManager.CurrentGen[i].ChromosomeBits.Equals(TargetChromosomeBits, StringComparison.OrdinalIgnoreCase)
+                || genManager.CurrentGen[i].GetFitnessValue() >= TargetFitnessValue)
             {
                 targetFound = true;
                 targetIndex = i;
@@ -51,7 +51,7 @@ class Program
         //  If targetFound is true, stop the iteration and print results.
         if (targetFound)
         {
-            Console.Write("\nTarget chromosome: " + targetChromosomeBits + " has been found. Ending generation iterations...\n\n");
+            Console.Write("\nTarget chromosome: " + TargetChromosomeBits + " has been found. Ending generation iterations...\n\n");
             Console.Write("[Results]" + "\n"
                 + "Generations till target chromosome: \t" + genManager.GenerationCounter + "\n"
                 + "Target chromosome's number:\t\t" + targetIndex + "\n"
@@ -60,7 +60,7 @@ class Program
         //  else, continue iterating a new generation
         else
         {
-            Console.Write("\nTarget chromosome: " + targetChromosomeBits + " has not been found. Iterating a new generation...\n\n");
+            Console.Write("\nTarget chromosome: " + TargetChromosomeBits + " has not been found. Iterating a new generation...\n\n");
             // iterate
         }
 

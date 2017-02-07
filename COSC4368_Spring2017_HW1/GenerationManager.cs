@@ -20,8 +20,8 @@ public class GenerationManager
     //  Default constructor
     public GenerationManager()
     {
-        CurrentGen = new Chromosome[Program.populationSize];
-        for (int i = 0; i < Program.populationSize; i++)
+        CurrentGen = new Chromosome[Program.PopulationSize];
+        for (int i = 0; i < Program.PopulationSize; i++)
         {
             CurrentGen[i] = new Chromosome();
         }
@@ -136,7 +136,7 @@ public class GenerationManager
         Random random = new Random();
 
         //  Select a random chromosome in the current generation
-        int randomChromosomeIndex = random.Next(0, Program.populationSize);
+        int randomChromosomeIndex = random.Next(0, Program.PopulationSize);
 
         //Console.Write("Chromosome to mutate index:\t" + randomChromosomeIndex + "\n");
 
@@ -146,7 +146,7 @@ public class GenerationManager
         Console.Write("Chromosome to mutate:\t" + CurrentGen[randomChromosomeIndex].ChromosomeBits + "\n");
 
         //  Select a random bit in the chromosome to flip
-        int randomBitIndex = random.Next(0, Program.chromosomeBitLength);
+        int randomBitIndex = random.Next(0, Program.ChromosomeBitLength);
 
         //  Since each instance of random is being generated at the same time, we need to sleep to avoid duplicate randoms
         Thread.Sleep(1);

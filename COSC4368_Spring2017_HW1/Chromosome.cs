@@ -16,7 +16,7 @@ public class Chromosome
 
         //  Generate random bit 10 times
         Random random = new Random();
-        for (int i = 0; i < Program.chromosomeBitLength; i++)
+        for (int i = 0; i < Program.ChromosomeBitLength; i++)
         {
             this.ChromosomeBits += "" + random.Next(0, 2);
 
