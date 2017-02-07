@@ -17,20 +17,29 @@ public struct ChromosomePair
 class Program
 {
     //  User-assigned Variables
-    public static int populationSize = 20;
+    public static int populationSize = 5;
     public static int chromosomeBitLength = 10;
-    public static int chromosomeToSearch = 1010101010;
+    public static int targetChromosome = 1010101010;
+
+    private static int generationCounter = 1;
 
     public static void Main(string[] args)
     {
-        Console.WriteLine("1st gen:");
+        Console.WriteLine("Generation: " + generationCounter + "\n"
+            + "Population size:\t\t\t" + populationSize + "\n"
+            + "Chromosome Bit Length:\t" + chromosomeBitLength + "\n"
+            + "Target chromosome:\t" + targetChromosome + "\n");
+
+        Console.WriteLine("Generation: " + generationCounter + "\n");
         GenerationManager genManager = new GenerationManager();
         Chromosome[] generation = genManager.CurrentGen;
 
         for (int i = 0; i < generation.Length; i++)
         {
-            Console.WriteLine(i+1 + ".\tChromosome: " + generation[i].ChromosomeString + "\tFitness: " + generation[i].CalculateFitness(Chromosome.SumStringCharacter));
+            Console.WriteLine("\t" + "Chromosome " + (i+1) + ":\t" + generation[i].ChromosomeString + "\t|\tFitness: " + generation[i].GetFitnessValue());
         }
+
+        Console.WriteLine();    //  Create new line for neatness
 
         Console.WriteLine("Pair Matches");
 
@@ -61,12 +70,12 @@ class Program
         }
         
         //  Perform mutations
-        Console.WriteLine("First Generation After Mutation Childrens");
+        /*Console.WriteLine("First Generation After Mutation Childrens");
         for (int i = 0; i < nextgen.Count; i++)
         {
             nextgen[i] = genManager.Mutate(nextgen[i]);
             Console.WriteLine(nextgen[i].ChromosomeString);
-        }
+        }*/
 
         genManager.PastGenerations.Add(genManager.CurrentGen);
         genManager.CurrentGen = nextgen.ToArray();
@@ -87,7 +96,7 @@ class Program
 
         foreach (Chromosome c in Gen)
         {
-            Console.WriteLine(c.ChromosomeString + " " + c.CalculateFitness(Chromosome.SumStringCharacter));
+            Console.WriteLine(c.ChromosomeString + " " + c.GetFitnessValue());
         }
 
         Console.WriteLine("Pair Matches"); List<ChromosomePair> pairs = new List<ChromosomePair>();
@@ -121,13 +130,13 @@ class Program
         }
 
         //Run mutations
-        Console.WriteLine("First Generation After Mutation Childrens");
+        /*Console.WriteLine("First Generation After Mutation Childrens");
 
         for (int i = 0; i < nextgen.Count; i++)
         {
             nextgen[i] = manager.Mutate(nextgen[i]);
             Console.WriteLine(nextgen[i].ChromosomeString);
-        }
+        }*/
 
         manager.PastGenerations.Add(manager.CurrentGen);
         manager.CurrentGen = nextgen.ToArray();

@@ -6,18 +6,16 @@ using System.Threading.Tasks;
 
 public class GenerationManager
 {
-    int populationSize = 20;
-
     public Chromosome[] CurrentGen;
     public List<object> PastGenerations = new List<object>();
-    public SelectionDelegate SelectionAlgorithm;
-    public float CrossoverProbability = .50f;
-    public float MutationProbability = .25f;
+    //public SelectionDelegate SelectionAlgorithm;
+    public float CrossoverProbability = 70;
+    public float MutationProbability = 25f;
 
     public GenerationManager()
     {
-        CurrentGen = new Chromosome[populationSize];
-        for (int i = 0; i < populationSize; i++)
+        CurrentGen = new Chromosome[Program.populationSize];
+        for (int i = 0; i < Program.populationSize; i++)
         {
             CurrentGen[i] = new Chromosome();
         }
@@ -29,10 +27,10 @@ public class GenerationManager
         int currentHighest = -1;
         int secondHighest = -1;
 
-        for (int i = 0; i < populationSize; i++)
+        for (int i = 0; i < Program.populationSize; i++)
         {
             Random r = new Random(Convert.ToInt32(DateTime.Now.Ticks % Int16.MaxValue));
-            int val = (CurrentGen[i].CalculateFitness(Chromosome.SumStringCharacter) + (r.Next() % 14));
+            int val = (CurrentGen[i].GetFitnessValue() + (r.Next() % 14));
             if (val >= currentHighest)
             {
                 pair.parent2 = pair.parent1;
@@ -52,12 +50,13 @@ public class GenerationManager
     public ChromosomePair Crossover(ChromosomePair pair)
     {
         ChromosomePair par = new ChromosomePair();
-        Random random = new Random();
-        //Random r = new Random(Convert.ToInt32(DateTime.Now.Ticks % Int16.MaxValue));
-        //bool doCrossover = (((r.Next() % 100) + 1) < CrossoverProbability);
-        float crossoverChance = random.Next(0, 100) / 100;
-        Console.WriteLine("Crossover chance: " + crossoverChance);
-        if (crossoverChance < CrossoverProbability)
+        //Random random = new Random();
+        Random r = new Random(Convert.ToInt32(DateTime.Now.Ticks % Int16.MaxValue));
+        bool doCrossover = (((r.Next() % 100) + 1) < CrossoverProbability);
+        //float crossoverChance = random.Next(0, 100) / 100;
+        //Console.WriteLine("Crossover chance: " + crossoverChance);
+        //if (crossoverChance < CrossoverProbability)
+        if (doCrossover)
         {
             par.parent1 = GenerateChild(pair);
         }
@@ -84,7 +83,18 @@ public class GenerationManager
     }
     private byte[] getByteArrayFromString(string p)
     {
-        List<byte> ret = new List<byte>(); foreach (Char c in p) { if (c == '1') { ret.Add(1); } else { ret.Add(0); } }
+        List<byte> ret = new List<byte>();
+        foreach (Char c in p)
+        {
+            if (c == '1')
+            {
+                ret.Add(1);
+            }
+            else
+            {
+                ret.Add(0);
+            }
+        }
         return ret.ToArray();
     }
     private string getStringFromByteArray(byte[] p)
@@ -99,17 +109,17 @@ public class GenerationManager
         return a;
     }
 
-    public Chromosome Mutate(Chromosome entry)
+    /*public Chromosome Mutate(Chromosome entry)
     {
         //Random random = new Random();
-        //Random r = new Random(Convert.ToInt32(DateTime.Now.Ticks % Int16.MaxValue));
-        //bool doMutation = (((r.Next() % 100)) < MutationProbability);
+        Random r = new Random(Convert.ToInt32(DateTime.Now.Ticks % Int16.MaxValue));
+        bool doMutation = (((r.Next() % 100)) < MutationProbability);
         //float mutationChance = random.Next(0, 100) / 100;
         //Console.WriteLine("mutation chance: " + mutationChance);
         Chromosome ret = new Chromosome();
         ret.ChromosomeString = entry.ChromosomeString;
 
-        if (AttemptMutation(MutationProbability))
+        if (doMutation)
         {
             if (entry.ChromosomeString.IndexOf('0') >= 0)
             {
@@ -120,28 +130,7 @@ public class GenerationManager
         }
 
         return ret;
-    }
-
-    private bool AttemptMutation(float probability)
-    {
-        bool isSuccessful = false;
-
-        Random random = new Random();
-
-
-
-        return isSuccessful;
-    }
-    private bool AttemptCrossover(float probability)
-    {
-        bool isSuccessful = false;
-
-        Random random = new Random();
-
-
-
-        return isSuccessful;
-    }
+    }*/
 }
 
 

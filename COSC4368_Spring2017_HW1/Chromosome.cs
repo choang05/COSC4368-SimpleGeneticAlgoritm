@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 public class Chromosome
 {
@@ -12,39 +13,45 @@ public class Chromosome
         get;
     }
 
-    public int CalculateFitness(FitnessDelegate fitnessFunction)
+    //  Evaluate the fitness value by calculating all the 1's in odd indexes and 0's in even indexes
+    public int GetFitnessValue()
     {
-        return fitnessFunction(ChromosomeString);
-    }
+        int fitnessValue = 0;
 
-    public static int SumStringCharacter(object chromosomestring)
-    {
-        int sum = 0; foreach (char c in (string)chromosomestring)
+        for (int i = 0; i < ChromosomeString.Length; i++)
         {
-            if (c == '1')
+            if (ChromosomeString[i] == '1' && IsOdd(i+1))
             {
-                sum++;
+                fitnessValue++;
             }
-            else if (c == '0')
+            else if (ChromosomeString[i] == '0' && !IsOdd(i+1))
             {
-
-            }
-            else
-            {
-                //tODO:AddErrorCondition
+                fitnessValue++;
             }
         }
 
-        return sum;
+        return fitnessValue;
     }
 
+    //  Chromosome default constructor with given bit length
     public Chromosome()
     {
-        Random r = new Random(Convert.ToInt32(DateTime.Now.Ticks % Int16.MaxValue));
         this.ChromosomeString = String.Empty;
-        for (int i = 0; i < 10; i++)
+
+        //  Generate random bit 10 times
+        Random random = new Random();
+        for (int i = 0; i < Program.chromosomeBitLength; i++)
         {
-            this.ChromosomeString += "" + r.Next() % 2;
+            this.ChromosomeString += "" + random.Next(0, 2);
+
+            //  Since each instance of random is being generated at the same time, we need to sleep each instance to avoid duplicate randoms
+            Thread.Sleep(1);
         }
+    }
+
+    //  Returns boolean if the given value is odd
+    public static bool IsOdd(int value)
+    {
+        return value % 2 != 0;
     }
 }
