@@ -7,10 +7,22 @@ using System.Threading;
 
 public class Chromosome
 {
-    public string ChromosomeString
+    public string ChromosomeBits;
+
+    //  Chromosome default constructor with given bit length
+    public Chromosome()
     {
-        set;
-        get;
+        this.ChromosomeBits = String.Empty;
+
+        //  Generate random bit 10 times
+        Random random = new Random();
+        for (int i = 0; i < Program.chromosomeBitLength; i++)
+        {
+            this.ChromosomeBits += "" + random.Next(0, 2);
+
+            //  Since each instance of random is being generated at the same time, we need to sleep to avoid duplicate randoms
+            Thread.Sleep(1);
+        }
     }
 
     //  Evaluate the fitness value by calculating all the 1's in odd indexes and 0's in even indexes
@@ -18,13 +30,16 @@ public class Chromosome
     {
         int fitnessValue = 0;
 
-        for (int i = 0; i < ChromosomeString.Length; i++)
+        //  iterate through each chromosome bit and increase fitness value based on 1's and 0's bit index
+        for (int i = 0; i < ChromosomeBits.Length; i++)
         {
-            if (ChromosomeString[i] == '1' && IsOdd(i+1))
+            //  if the bit is a 1 and it's index is odd...
+            if (ChromosomeBits[i] == '1' && IsOdd(i+1))
             {
                 fitnessValue++;
             }
-            else if (ChromosomeString[i] == '0' && !IsOdd(i+1))
+            //  if the bit is a 0 and it's index is even...
+            else if (ChromosomeBits[i] == '0' && !IsOdd(i+1))
             {
                 fitnessValue++;
             }
@@ -33,21 +48,6 @@ public class Chromosome
         return fitnessValue;
     }
 
-    //  Chromosome default constructor with given bit length
-    public Chromosome()
-    {
-        this.ChromosomeString = String.Empty;
-
-        //  Generate random bit 10 times
-        Random random = new Random();
-        for (int i = 0; i < Program.chromosomeBitLength; i++)
-        {
-            this.ChromosomeString += "" + random.Next(0, 2);
-
-            //  Since each instance of random is being generated at the same time, we need to sleep each instance to avoid duplicate randoms
-            Thread.Sleep(1);
-        }
-    }
 
     //  Returns boolean if the given value is odd
     public static bool IsOdd(int value)
