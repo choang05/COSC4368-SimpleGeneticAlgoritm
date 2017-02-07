@@ -5,11 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 
+/*public struct ChromosomePair
+{
+    public Chromosome parent1;
+    public Chromosome parent2;
+}*/
+
 public class GenerationManager
 {
     public Chromosome[] CurrentGen;
     public List<object> PastGenerations = new List<object>();
-    public float CrossoverProbability = 70;
+    public int GenerationCounter = 1;
 
     //  Default constructor
     public GenerationManager()
@@ -21,7 +27,7 @@ public class GenerationManager
         }
     }
 
-    public ChromosomePair BasicSelection()
+    /*public ChromosomePair BasicSelection()
     {
         ChromosomePair pair = new ChromosomePair();
         int currentHighest = -1;
@@ -46,14 +52,14 @@ public class GenerationManager
         }
 
         return pair;
-    }
+    }*/
 
-    public ChromosomePair Crossover(ChromosomePair pair)
+    /*public ChromosomePair Crossover(Chromosome parent1, Chromosome parent2)
     {
         ChromosomePair par = new ChromosomePair();
         //Random random = new Random();
         Random r = new Random(Convert.ToInt32(DateTime.Now.Ticks % Int16.MaxValue));
-        bool doCrossover = (((r.Next() % 100) + 1) < CrossoverProbability);
+        bool doCrossover = (((r.Next() % 100) + 1) < Program.crossoverProbability);
         //float crossoverChance = random.Next(0, 100) / 100;
         //Console.WriteLine("Crossover chance: " + crossoverChance);
         //if (crossoverChance < CrossoverProbability)
@@ -68,9 +74,9 @@ public class GenerationManager
         }
 
         return par;
-    }
+    }*/
 
-    private Chromosome GenerateChild(ChromosomePair pair)
+    /*private Chromosome GenerateChild(ChromosomePair pair)
     {
         Byte[] parentOneArray = getByteArrayFromString(pair.parent1.ChromosomeBits);
         Byte[] parentTwoArray = getByteArrayFromString(pair.parent2.ChromosomeBits);
@@ -112,7 +118,7 @@ public class GenerationManager
         }
 
         return a;
-    }
+    }*/
 
     //  Randomly selects a chromosome from the current generation and flips a random bit within the chromosome
     public void MutateRandomChromosome()
@@ -122,7 +128,7 @@ public class GenerationManager
         //  Select a random chromosome in the current generation
         int randomChromosomeIndex = random.Next(0, Program.populationSize);
 
-        Console.Write("Chromosome to mutate index:\t" + randomChromosomeIndex + "\n");
+        //Console.Write("Chromosome to mutate index:\t" + randomChromosomeIndex + "\n");
 
         //  Since each instance of random is being generated at the same time, we need to sleep to avoid duplicate randoms
         Thread.Sleep(1);
@@ -135,7 +141,7 @@ public class GenerationManager
         //  Since each instance of random is being generated at the same time, we need to sleep to avoid duplicate randoms
         Thread.Sleep(1);
 
-        Console.Write("Mutatated bit index:\t" + randomBitIndex + "\n");
+        //Console.Write("Mutatated bit index:\t" + randomBitIndex + "\n");
 
         //  Flip bit in chromosome (mutate) with string replacment
         StringBuilder sb = new StringBuilder(CurrentGen[randomChromosomeIndex].ChromosomeBits);
@@ -155,30 +161,7 @@ public class GenerationManager
         Console.Write("New mutated chromosome:\t" + CurrentGen[randomChromosomeIndex].ChromosomeBits + "\n");
     }
 
-    /*public Chromosome Mutate(Chromosome entry)
-    {
-        //Random random = new Random();
-        /*Random r = new Random(Convert.ToInt32(DateTime.Now.Ticks % Int16.MaxValue));
-        bool doMutation = (((r.Next() % 100)) < MutationProbability);
-        //float mutationChance = random.Next(0, 100) / 100;
-        //Console.WriteLine("mutation chance: " + mutationChance);
-        Chromosome mutChromosome = new Chromosome();
-        mutChromosome.ChromosomeBits = entry.ChromosomeBits;
-
-        if (doMutation)
-        {
-            if (entry.ChromosomeBits.IndexOf('0') >= 0)
-            {
-                byte[] tmp = getByteArrayFromString(entry.ChromosomeBits);
-                tmp[entry.ChromosomeBits.IndexOf('0')] = 1;
-                mutChromosome.ChromosomeBits = getStringFromByteArray(tmp);
-            }
-        }
-
-        //return mutChromosome;
-    }*/
-
-    public void IterateGeneration()
+    /*public void IterateGeneration()
     {
         Chromosome[] Gen = CurrentGen;
 
@@ -189,11 +172,11 @@ public class GenerationManager
 
         Console.WriteLine("Pair Matches"); List<ChromosomePair> pairs = new List<ChromosomePair>();
 
-        /*foreach (Chromosome c in Gen)
+        foreach (Chromosome c in Gen)
         {
             ChromosomePair pair = manager.BasicSelection(); pairs.Add(pair);
             Console.WriteLine(pair.parent1.ChromosomeString + " " + pair.parent2.ChromosomeString);
-        }*/
+        }
 
         Console.WriteLine("First Generation Before mutation Childrens");
         List<Chromosome> nextgen = new List<Chromosome>();
@@ -218,17 +201,17 @@ public class GenerationManager
         }
 
         //Run mutations
-        /*Console.WriteLine("First Generation After Mutation Childrens");
+        Console.WriteLine("First Generation After Mutation Childrens");
 
         for (int i = 0; i < nextgen.Count; i++)
         {
             nextgen[i] = manager.Mutate(nextgen[i]);
             Console.WriteLine(nextgen[i].ChromosomeString);
-        }*/
+        }
 
         PastGenerations.Add(CurrentGen);
         CurrentGen = nextgen.ToArray();
-    }
+    }*/
 }
 
 
