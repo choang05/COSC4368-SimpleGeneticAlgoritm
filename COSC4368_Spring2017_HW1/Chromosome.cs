@@ -13,16 +13,6 @@ public class Chromosome
     public Chromosome()
     {
         this.ChromosomeBits = String.Empty;
-
-        //  Generate random bit 10 times
-        Random random = new Random();
-        for (int i = 0; i < Program.ChromosomeBitLength; i++)
-        {
-            this.ChromosomeBits += "" + random.Next(0, 2);
-
-            //  Since each instance of random is being generated at the same time, we need to sleep to avoid duplicate randoms
-            Thread.Sleep(1);
-        }
     }
 
     //  Evaluate the fitness value by calculating all the 1's in odd indexes and 0's in even indexes
@@ -48,9 +38,21 @@ public class Chromosome
         return fitnessValue;
     }
 
+    //  Creates a random bit sequence for the chromosome
+    public void GenerateRandomBits()
+    {
+        Random random = new Random();
+        for (int i = 0; i < Program.ChromosomeBitLength; i++)
+        {
+            this.ChromosomeBits += "" + random.Next(0, 2);
+
+            //  Since each instance of random is being generated at the same time, we need to sleep to avoid duplicate randoms
+            Thread.Sleep(1);
+        }
+    }
 
     //  Returns boolean if the given value is odd
-    public static bool IsOdd(int value)
+    private bool IsOdd(int value)
     {
         return value % 2 != 0;
     }
