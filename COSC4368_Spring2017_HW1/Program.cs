@@ -15,23 +15,23 @@ class Program
 
     public static void Main(string[] args)
     {
+        //  Print initial conditions
         Console.WriteLine("[User-defined Parameters]" + "\n"
-            + "Population size:\t" + populationSize + "\n"
-            + "Chromosome Bit Length:\t" + chromosomeBitLength + "\n"
-            + "Target chromosome:\t" + targetChromosomeBits + "\n"
-            + "Crossover probability:\t" + crossoverProbability + "%\n");
+            + "Population size:\t\t" + populationSize + "\n"
+            + "Chromosome Bit Length:\t\t" + chromosomeBitLength + "\n"
+            + "Target chromosome:\t\t" + targetChromosomeBits + "\n"
+            + "Target chromosome fitness:\t" + targetFitnessValue + "\n"
+            + "Crossover probability:\t\t" + crossoverProbability + "%\n");
 
+        //  Initialize generation manager
         GenerationManager genManager = new GenerationManager();
-        Console.WriteLine("Generation: " + genManager.GenerationCounter + "\n");
-        //Chromosome[] generation = genManager.CurrentGen;
 
-        PrintGeneration(genManager.CurrentGen);
+        //  Print the generation stats
+        PrintGeneration(genManager);
 
-        Console.WriteLine();    //  Create new line for neatness
+        genManager.MutateRandomChromosome();    //  Mutation test
 
-        genManager.MutateRandomChromosome();
-
-        genManager.CurrentGen[6].ChromosomeBits = targetChromosomeBits; // TEST
+        //genManager.CurrentGen[6].ChromosomeBits = targetChromosomeBits; // TEST
 
         //  Evaluate generation for chromosomes that match the target chromosome
         bool targetFound = false;
@@ -51,8 +51,8 @@ class Program
         //  If targetFound is true, stop the iteration and print results.
         if (targetFound)
         {
-            Console.Write("\nTarget chromosome: " + targetChromosomeBits + " has been found. Ending generation iterations...\n");
-            Console.Write("\n[Results]" + "\n"
+            Console.Write("\nTarget chromosome: " + targetChromosomeBits + " has been found. Ending generation iterations...\n\n");
+            Console.Write("[Results]" + "\n"
                 + "Generations till target chromosome: \t" + genManager.GenerationCounter + "\n"
                 + "Target chromosome's number:\t\t" + targetIndex + "\n"
                 + "Target chromosome's fitness:\t\t" + genManager.CurrentGen[targetIndex].GetFitnessValue() + "\n");
@@ -60,65 +60,76 @@ class Program
         //  else, continue iterating a new generation
         else
         {
-            Console.Write("\nTarget chromosome: " + targetChromosomeBits + " has not been found. Iterating a new generation...");
+            Console.Write("\nTarget chromosome: " + targetChromosomeBits + " has not been found. Iterating a new generation...\n\n");
             // iterate
         }
 
-            /*Console.WriteLine("Pair Matches");
+        ChromosomePair parents;
+        parents.parent1 = genManager.CurrentGen[0];
+        parents.parent2 = genManager.CurrentGen[1];
 
-            List<ChromosomePair> pairs = new List<ChromosomePair>();
-            foreach (Chromosome c in generation)
+        genManager.CrossoverChromosomes(parents);
+
+        /*Console.WriteLine("Pair Matches");
+
+        List<ChromosomePair> pairs = new List<ChromosomePair>();
+        foreach (Chromosome c in generation)
+        {
+            ChromosomePair pair = genManager.BasicSelection(); 
+            pairs.Add(pair);
+            Console.WriteLine(pair.parent1.ChromosomeBits + " " + pair.parent2.ChromosomeBits);
+        }*/
+
+        /*Console.WriteLine("1st Generation Before mutation Childrens");
+
+        List<Chromosome> nextgen = new List<Chromosome>();
+        foreach (ChromosomePair p in pairs)
+        {
+            ChromosomePair pair = genManager.Crossover(p);
+            if (pair.parent2 == null) { Console.WriteLine(pair.parent1.ChromosomeBits); nextgen.Add(pair.parent1); }
+            else
             {
-                ChromosomePair pair = genManager.BasicSelection(); pairs.Add(pair);
                 Console.WriteLine(pair.parent1.ChromosomeBits + " " + pair.parent2.ChromosomeBits);
-            }*/
-
-            /*Console.WriteLine("1st Generation Before mutation Childrens");
-
-            List<Chromosome> nextgen = new List<Chromosome>();
-            foreach (ChromosomePair p in pairs)
-            {
-                ChromosomePair pair = genManager.Crossover(p);
-                if (pair.parent2 == null) { Console.WriteLine(pair.parent1.ChromosomeBits); nextgen.Add(pair.parent1); }
-                else
-                {
-                    Console.WriteLine(pair.parent1.ChromosomeBits + " " + pair.parent2.ChromosomeBits);
-                    nextgen.Add(pair.parent1); nextgen.Add(pair.parent2);
-                }
+                nextgen.Add(pair.parent1); nextgen.Add(pair.parent2);
             }
+        }
 
-            if (nextgen.Count > populationSize)
-            {
-                nextgen.RemoveRange(3, nextgen.Count - 1 - 3);
-            }*/
+        if (nextgen.Count > populationSize)
+        {
+            nextgen.RemoveRange(3, nextgen.Count - 1 - 3);
+        }*/
 
-            //  Perform mutations
-            /*Console.WriteLine("First Generation After Mutation Childrens");
-            for (int i = 0; i < nextgen.Count; i++)
-            {
-                nextgen[i] = genManager.Mutate(nextgen[i]);
-                Console.WriteLine(nextgen[i].ChromosomeBits);
-            }
+        //  Perform mutations
+        /*Console.WriteLine("First Generation After Mutation Childrens");
+        for (int i = 0; i < nextgen.Count; i++)
+        {
+            nextgen[i] = genManager.Mutate(nextgen[i]);
+            Console.WriteLine(nextgen[i].ChromosomeBits);
+        }
 
-            genManager.PastGenerations.Add(genManager.CurrentGen);
-            genManager.CurrentGen = nextgen.ToArray();
-            Console.WriteLine("How many more generations would you like to iterate");
+        genManager.PastGenerations.Add(genManager.CurrentGen);
+        genManager.CurrentGen = nextgen.ToArray();
+        Console.WriteLine("How many more generations would you like to iterate");
 
-            int iterations = Convert.ToInt32(Console.ReadLine());
-            for (int i = 0; i < iterations; i++)
-            {
-                genManager.IterateGeneration();
-            }*/
+        int iterations = Convert.ToInt32(Console.ReadLine());
+        for (int i = 0; i < iterations; i++)
+        {
+            genManager.IterateGeneration();
+        }*/
 
-            Console.ReadLine();
+        Console.ReadLine();
     }
     
     //  Displays the stats for the current generation
-    static void PrintGeneration(Chromosome[] generation)
+    static void PrintGeneration(GenerationManager genManager)
     {
-        for (int i = 0; i < generation.Length; i++)
+        Console.WriteLine("Generation: " + genManager.GenerationCounter + "\n");
+
+        for (int i = 0; i < genManager.CurrentGen.Length; i++)
         {
-            Console.WriteLine("\t" + "Chromosome " + (i) + ":\t" + generation[i].ChromosomeBits + "\t|\tFitness: " + generation[i].GetFitnessValue());
+            Console.WriteLine("\t" + "Chromosome " + (i) + ":\t" + genManager.CurrentGen[i].ChromosomeBits + "\t|\tFitness: " + genManager.CurrentGen[i].GetFitnessValue());
         }
+
+        Console.WriteLine();    //  Create new line for neatness
     }
 }

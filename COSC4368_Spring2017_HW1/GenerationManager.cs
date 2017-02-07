@@ -5,11 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 
-/*public struct ChromosomePair
+public struct ChromosomePair
 {
     public Chromosome parent1;
     public Chromosome parent2;
-}*/
+}
 
 public class GenerationManager
 {
@@ -54,27 +54,37 @@ public class GenerationManager
         return pair;
     }*/
 
-    /*public ChromosomePair Crossover(Chromosome parent1, Chromosome parent2)
+    //  Crossover chromosome parents using single-point crossover
+    public ChromosomePair CrossoverChromosomes(ChromosomePair parents)
     {
-        ChromosomePair par = new ChromosomePair();
-        //Random random = new Random();
-        Random r = new Random(Convert.ToInt32(DateTime.Now.Ticks % Int16.MaxValue));
-        bool doCrossover = (((r.Next() % 100) + 1) < Program.crossoverProbability);
-        //float crossoverChance = random.Next(0, 100) / 100;
-        //Console.WriteLine("Crossover chance: " + crossoverChance);
-        //if (crossoverChance < CrossoverProbability)
-        if (doCrossover)
-        {
-            par.parent1 = GenerateChild(pair);
-        }
-        else
-        {
-            par.parent1 = pair.parent1;
-            par.parent2 = pair.parent2;
-        }
+        ChromosomePair newParents = parents;
 
-        return par;
-    }*/
+        Console.Write("Parent 1:\t" + parents.parent1.ChromosomeBits + "\n");
+        Console.Write("Parent 2:\t" + parents.parent2.ChromosomeBits + "\n\n");
+
+        string parent1RightBits = parents.parent1.ChromosomeBits.Substring(parents.parent1.ChromosomeBits.Length / 2, parents.parent1.ChromosomeBits.Length / 2);
+        string parent2RightBits = parents.parent2.ChromosomeBits.Substring(parents.parent2.ChromosomeBits.Length / 2, parents.parent2.ChromosomeBits.Length / 2);
+
+        Console.Write("Parent 1 right bits:\t" + parent1RightBits + "\n");
+        Console.Write("Parent 2 right bits:\t" + parent2RightBits + "\n\n");
+
+        //  Swap the parent1's right half bits with parent2's right half bits
+        var sb1 = new StringBuilder(parents.parent1.ChromosomeBits);
+        sb1.Remove(parents.parent1.ChromosomeBits.Length / 2, parents.parent1.ChromosomeBits.Length / 2);
+        sb1.Insert(parents.parent1.ChromosomeBits.Length / 2, parent2RightBits);
+        newParents.parent1.ChromosomeBits = sb1.ToString();
+
+        //  Swap the parent2's right half bits with parent1's right half bits
+        var sb2 = new StringBuilder(parents.parent2.ChromosomeBits);
+        sb2.Remove(parents.parent2.ChromosomeBits.Length / 2, parents.parent2.ChromosomeBits.Length / 2);
+        sb2.Insert(parents.parent2.ChromosomeBits.Length / 2, parent1RightBits);
+        newParents.parent2.ChromosomeBits = sb2.ToString();
+
+        Console.Write("New parent 1:\t" + newParents.parent1.ChromosomeBits + "\n");
+        Console.Write("New parent 2:\t" + newParents.parent2.ChromosomeBits + "\n");
+
+        return newParents;
+    }
 
     /*private Chromosome GenerateChild(ChromosomePair pair)
     {
