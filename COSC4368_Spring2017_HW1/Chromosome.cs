@@ -8,6 +8,7 @@ using System.Threading;
 public class Chromosome
 {
     public string ChromosomeBits;
+    public int FitnessValue = 0;
 
     //  Chromosome default constructor with given bit length
     public Chromosome()
@@ -16,27 +17,26 @@ public class Chromosome
     }
 
     //  Evaluate the fitness value by calculating all the 1's in odd indexes and 0's in even indexes
-    #region GetFitnessValue()
-    public int GetFitnessValue()
+    #region CalculateFitnessValue()
+    public void CalculateFitnessValue()
     {
-        int fitnessValue = 0;
-
+        //  Reset fitness
+        FitnessValue = 0;
+        
         //  iterate through each chromosome bit and increase fitness value based on 1's and 0's bit index
         for (int i = 0; i < ChromosomeBits.Length; i++)
         {
             //  if the bit is a 1 and it's index is odd...
             if (ChromosomeBits[i] == '1' && IsOdd(i+1))
             {
-                fitnessValue++;
+                FitnessValue++;
             }
             //  if the bit is a 0 and it's index is even...
             else if (ChromosomeBits[i] == '0' && !IsOdd(i+1))
             {
-                fitnessValue++;
+                FitnessValue++;
             }
         }
-
-        return fitnessValue;
     }
     #endregion
 

@@ -31,8 +31,8 @@ class Program
         while (!targetFound)
         //for (int k = 0; k < 3; k++)
         {
-            //  Archive the current generation
-            genManager.ArchiveGeneration();
+            //  Archive the current generationC
+            genManager.ArchiveCurrentGeneration();
 
             //  Print the generation stats
             PrintGeneration(genManager, genManager.GenerationCounter-1);
@@ -43,7 +43,7 @@ class Program
             {
                 //  If there exist a chromosome that matches our target chromosome OR has the target fitness or better, break from for loop.
                 if (genManager.CurrentGen[i].ChromosomeBits.Equals(TargetChromosomeBits, StringComparison.OrdinalIgnoreCase)
-                    || genManager.CurrentGen[i].GetFitnessValue() >= TargetFitnessValue)
+                    || genManager.CurrentGen[i].FitnessValue >= TargetFitnessValue)
                 {
                     targetFound = true;
                     targetIndex = i;
@@ -58,20 +58,16 @@ class Program
                 Console.Write("[Results]" + "\n"
                     + "Generations till target chromosome: \t" + genManager.GenerationCounter + "\n"
                     + "Target chromosome's number:\t\t" + targetIndex + "\n"
-                    + "Target chromosome's fitness:\t\t" + genManager.CurrentGen[targetIndex].GetFitnessValue() + "\n");
+                    + "Target chromosome's fitness:\t\t" + genManager.CurrentGen[targetIndex].FitnessValue + "\n");
                 break;
             }
             //  else, continue iterating a new generation
             else
             {
-                Console.Write("Target chromosome: " + TargetChromosomeBits + " has not been found. Iterating a new generation...\n");
+                Console.Write("Target chromosome: " + TargetChromosomeBits + " has not been found. Iterating a new generation...\n\n");
 
                 //  Iterate a new generation
                 genManager.IterateCurrentGeneration();
-
-                //genManager.ArchiveGeneration();
-
-                //PrintGeneration(genManager, genManager.GenerationCounter-1);
             }
         }
 
@@ -86,10 +82,11 @@ class Program
         Console.Write("Generation: " + genManager.PastGenerations[genNumber].generationNumber + "\n\n");
         for (int j = 0; j < genManager.PastGenerations[genNumber].Chromosomes.Length; j++)
         {
-            Console.WriteLine("\t" + "Chromosome " + (j) + ":\t" + genManager.PastGenerations[genNumber].Chromosomes[j].ChromosomeBits + "\t|\tFitness: " + genManager.PastGenerations[genNumber].Chromosomes[j].GetFitnessValue());
+            Console.WriteLine("\t" + "Chromosome " + (j) + ":\t" + genManager.PastGenerations[genNumber].Chromosomes[j].ChromosomeBits + "\t|\tFitness: " + genManager.PastGenerations[genNumber].Chromosomes[j].FitnessValue);
         }
         Console.Write("\nAverage fitness: " + genManager.PastGenerations[genNumber].averageFitness + "\n");
-        Console.Write("Highest fitness: " + genManager.PastGenerations[genNumber].highestFitness + "\n\n");
+        Console.Write("Highest fitness: " + genManager.PastGenerations[genNumber].highestFitness + "\n");
+        Console.Write("Total fitness: " + genManager.PastGenerations[genNumber].totalFitness + "\n\n");
     }
     #endregion
 }

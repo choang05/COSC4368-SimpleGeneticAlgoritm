@@ -19,6 +19,7 @@ public struct GenerationData
     public int generationNumber;
     public int highestFitness;
     public float averageFitness;
+    public int totalFitness;
 }
 
 public class GenerationManager
@@ -37,15 +38,16 @@ public class GenerationManager
             //  Initialize chromosome objects
             CurrentGen[i] = new Chromosome();
 
-            //  Generate initial chromosomes with random bits
+            //  Generate initial chromosomes with random bits and determine its fitness value
             CurrentGen[i].GenerateRandomBits();
+            CurrentGen[i].CalculateFitnessValue();
         }
     }
     #endregion
 
     //  Creates a GenerationData structure that stores information of the generation such as chromosomes and average fitness
-    #region ArchiveGeneration()
-    public void ArchiveGeneration()
+    #region ArchiveCurrentGeneration()
+    public void ArchiveCurrentGeneration()
     {
         //  Create a generation structure to hold all data related to the generation
         GenerationData generation = new GenerationData();
@@ -55,18 +57,22 @@ public class GenerationManager
         //  Calculate average fitness
         int totalFitness = 0;
         for (int i = 0; i < Program.PopulationSize; i++)
-            totalFitness += CurrentGen[i].GetFitnessValue();
+            totalFitness += CurrentGen[i].FitnessValue;
         generation.averageFitness = (float)totalFitness / (float)Program.PopulationSize;
 
         //  Calculate highest fitness
         int currentHighestFitness = 0;
         for (int i = 0; i < Program.PopulationSize; i++)
         {
-            int chromosomeFitnessValue = CurrentGen[i].GetFitnessValue();
+            int chromosomeFitnessValue = CurrentGen[i].FitnessValue;
             if (chromosomeFitnessValue > currentHighestFitness)
                 currentHighestFitness = chromosomeFitnessValue;
         }
         generation.highestFitness = currentHighestFitness;
+
+        //  Calculate total fitness
+        foreach (var chromosome in CurrentGen)
+            generation.totalFitness += chromosome.FitnessValue;
 
         //  Add current generation into past generation list
         PastGenerations.Add(generation);
@@ -77,27 +83,48 @@ public class GenerationManager
     #region IterateCurrentGeneration()
     public void IterateCurrentGeneration()
     {
-        //  Selection - using weighted probabilty, select chromosomes to crossover and replicate
-        List<Chromosome> chromosomesToCrossover = CurrentGen.ToList();
-        List<Chromosome> chromosomeToReplicate = new List<Chromosome>();
+        //  Selection - using crossoverPercentage and weighted probabilty, select chromosomes to crossover and replicate
+        #region Selection process
+        //  Determine crossover and replication size based on crossoverPercentage
+        int amountToCrossover = (int)Math.Round(Program.CrossoverPercentage * Program.PopulationSize);
+        
+        //  Create a list that maps weight index to the chromosome. Index is a section of the chromosome's fitness
+        List<Chromosome> weightMap = new List<Chromosome>();
+        for (int i = 0; i < CurrentGen.Length; i++)
+            for (int j = 0; j < CurrentGen[i].FitnessValue; j++)
+                weightMap.Add(CurrentGen[i]);
 
-        //  TEST
-        chromosomeToReplicate.Add(chromosomesToCrossover[19]);
-        chromosomeToReplicate.Add(chromosomesToCrossover[18]);
-        chromosomeToReplicate.Add(chromosomesToCrossover[17]);
-        chromosomeToReplicate.Add(chromosomesToCrossover[16]);
-        chromosomeToReplicate.Add(chromosomesToCrossover[15]);
-        chromosomeToReplicate.Add(chromosomesToCrossover[14]);
-        chromosomesToCrossover.RemoveRange(13, 6);
+        //  List that contains the chromosomes that will be crossingover
+        List<Chromosome> chromosomesToCrossover = new List<Chromosome>();
+        //  be default, replication list is the current generation but elements will be transferred to the crossover list during weighted selection
+        List<Chromosome> chromosomeToReplicate = CurrentGen.ToList();
 
-        //  Print
-        //for (int i = 0; i < chromosomesToCrossover.Count; i++)
-        //    Console.Write("Chromosomes to crossover: " + chromosomesToCrossover[i].ChromosomeBits + "\n");
-        //Console.Write("\n");
-        //  Print
-        //for (int i = 0; i < chromosomeToReplicate.Count; i++)
-        //    Console.Write("Chromosomes to replicate: " + chromosomeToReplicate[i].ChromosomeBits + "\n");
+        //  Randomly select a number to match the number to the chromosome to the weight map then add the chromosome to the crossover list
+        Random random = new Random();
+        for (int i = 0; i < amountToCrossover; i++)
+        {
+            //  while loop prevents selecting a chromosome already existing in the crossover list
+            int randomIndex = 0;
+            do
+            {
+                //  Select random index from weight map
+                randomIndex = random.Next(0, weightMap.Count);
+                Thread.Sleep(1);    //  Since each instance of random is being generated at the same time, we need to sleep to avoid duplicate randoms
+            } while (chromosomesToCrossover.Contains(weightMap[randomIndex]));
 
+            //  Add chromosome of that random index into the crossover list && remove the chromosome from the replication list
+            chromosomesToCrossover.Add(weightMap[randomIndex]);
+            chromosomeToReplicate.Remove(weightMap[randomIndex]);
+        }
+
+        //  Print crossover
+        /*for (int i = 0; i < chromosomesToCrossover.Count; i++)
+            Console.Write("("+i+") Chromosomes to crossover: " + chromosomesToCrossover[i].ChromosomeBits + "\t Fitness:\t" + chromosomesToCrossover[i].FitnessValue + "\n");
+        Console.Write("\n");*/
+        //  Print replicates
+        /*for (int i = 0; i < chromosomeToReplicate.Count; i++)
+            Console.Write("(" + i + ") Chromosomes to replicate: " + chromosomeToReplicate[i].ChromosomeBits + "\n");
+        */
 
         //  If the crossoverChromosome list is odd in the case of an odd population size... 
         //      transfer one chromosomeToReplicate to the crossoverChromosome list so there is a even pairing number
@@ -106,17 +133,20 @@ public class GenerationManager
             chromosomesToCrossover.Add(chromosomeToReplicate[0]);
             chromosomeToReplicate.RemoveAt(0);
         }
+        #endregion
 
         //  Crossover - perform and cache the crossover given chromosomesToCrossover list
         List<Chromosome> crossoverChromosomes = CrossoverChromosomes(chromosomesToCrossover);
-
-        Console.Write("\n");
-        //  Print
-        //for (int i = 0; i < crossoverChromosomes.Count; i++)
-        //    Console.Write("Crossed over chromosomes: " + crossoverChromosomes[i].ChromosomeBits + "\n");
+        
+        //  Update the current generation with the newly created crossoverChromosomes list and replication list
+        CurrentGen = crossoverChromosomes.Concat(chromosomeToReplicate).ToArray();
 
         //  Mutation - Mutate a random chromosome in the current generation
         MutateRandomChromosome();
+
+        //  Re-Evaluate all chromosomes fitness value
+        foreach (Chromosome chromosome in CurrentGen)
+            chromosome.CalculateFitnessValue();
 
         //  Increment generation number
         GenerationCounter++;
