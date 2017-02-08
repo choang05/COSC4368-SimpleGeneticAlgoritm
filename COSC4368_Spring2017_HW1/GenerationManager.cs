@@ -15,7 +15,7 @@ public struct ChromosomePair
 //  Strut that contains generation related data such as average fitness and chromosomes
 public struct GenerationData
 {
-    public Chromosome[] Chromosomes;
+    public Chromosome[] chromosomes;
     public int generationNumber;
     public int highestFitness;
     public float averageFitness;
@@ -51,7 +51,7 @@ public class GenerationManager
     {
         //  Create a generation structure to hold all data related to the generation
         GenerationData generation = new GenerationData();
-        generation.Chromosomes = CurrentGen;
+        generation.chromosomes = CurrentGen;
         generation.generationNumber = GenerationCounter;
 
         //  Calculate average fitness

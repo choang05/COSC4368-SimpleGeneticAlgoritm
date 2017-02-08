@@ -11,7 +11,7 @@ class Program
     public static int ChromosomeBitLength = 10;
     public static string TargetChromosomeBits = "1010101010";
     public static int TargetFitnessValue = 10;
-    public static float CrossoverPercentage = .70f;
+    public static float CrossoverPercentage = 0.30f;
 
     public static void Main(string[] args)
     {
@@ -35,7 +35,7 @@ class Program
             genManager.ArchiveCurrentGeneration();
 
             //  Print the generation stats
-            PrintGeneration(genManager, genManager.GenerationCounter-1);
+            PrintGenerationResults(genManager, genManager.GenerationCounter-1);
 
             //  Evaluate generation for chromosomes that match the target chromosome
             int targetIndex = 0;
@@ -51,20 +51,20 @@ class Program
                 }
             }
 
-            //  If targetFound is true, stop the iteration and print results.
+            //  If targetFound is true, stop the iteration && print results
             if (targetFound)
             {
-                Console.Write("Target chromosome: " + TargetChromosomeBits + " has been found. Ending generation iterations...\n\n");
-                Console.Write("[Results]" + "\n"
-                    + "Generations till target chromosome: \t" + genManager.GenerationCounter + "\n"
-                    + "Target chromosome's number:\t\t" + targetIndex + "\n"
-                    + "Target chromosome's fitness:\t\t" + genManager.CurrentGen[targetIndex].FitnessValue + "\n");
+                Console.Write("Target chromosome: " + TargetChromosomeBits + " found. Ending generation iterations...\n");
+
+                //  Print average fitness in each generation
+                PrintCompletedResults(genManager, targetIndex);
+
                 break;
             }
             //  else, continue iterating a new generation
             else
             {
-                Console.Write("Target chromosome: " + TargetChromosomeBits + " has not been found. Iterating a new generation...\n\n");
+                Console.Write("Target chromosome: " + TargetChromosomeBits + " not found. Iterating a new generation...\n");
 
                 //  Iterate a new generation
                 genManager.IterateCurrentGeneration();
@@ -77,16 +77,40 @@ class Program
 
     //  Displays the stats for the current generation
     #region PrintGeneration(GenerationManager genManager, int genNumber)
-    static void PrintGeneration(GenerationManager genManager, int genNumber)
+    static void PrintGenerationResults(GenerationManager genManager, int genNumber)
     {
-        Console.Write("Generation: " + genManager.PastGenerations[genNumber].generationNumber + "\n\n");
-        for (int j = 0; j < genManager.PastGenerations[genNumber].Chromosomes.Length; j++)
+        Console.Write("\n[Generation " + genManager.PastGenerations[genNumber].generationNumber +"]"+ "\n\n");
+        /*+ "\t|\tAverage fitness: " + genManager.PastGenerations[genNumber].averageFitness
+        + "\t|\tTotal fitness: " + genManager.PastGenerations[genNumber].totalFitness
+        + "\t|\tHighest fitness: " + genManager.PastGenerations[genNumber].highestFitness
+        + "\n\n");*/
+        for (int j = 0; j < genManager.PastGenerations[genNumber].chromosomes.Length; j++)
         {
-            Console.WriteLine("\t" + "Chromosome " + (j) + ":\t" + genManager.PastGenerations[genNumber].Chromosomes[j].ChromosomeBits + "\t|\tFitness: " + genManager.PastGenerations[genNumber].Chromosomes[j].FitnessValue);
+            Console.WriteLine("\t" + "Chromosome " + (j) + ":\t" + genManager.PastGenerations[genNumber].chromosomes[j].ChromosomeBits + "\t|\tFitness: " + genManager.PastGenerations[genNumber].chromosomes[j].FitnessValue);
         }
-        Console.Write("\nAverage fitness: " + genManager.PastGenerations[genNumber].averageFitness + "\n");
-        Console.Write("Highest fitness: " + genManager.PastGenerations[genNumber].highestFitness + "\n");
-        Console.Write("Total fitness: " + genManager.PastGenerations[genNumber].totalFitness + "\n\n");
+        Console.Write("\n");
+    }
+    #endregion
+
+    #region PrintCompletedResults(GenerationManager genManager, int targetIndex)
+    static void PrintCompletedResults(GenerationManager genManager, int targetIndex)
+    {
+        /*Console.Write("\n[Results]:" + "\n\n"
+            + "\tGenerations till target chromosome: \t" + genManager.GenerationCounter + "\n"
+            + "\tTarget chromosome's number:\t\t" + targetIndex + "\n"
+            + "\tTarget chromosome's fitness:\t\t" + genManager.CurrentGen[targetIndex].FitnessValue + "\n\n");
+*/
+        Console.Write("\n[Results]:" + "\n\n");
+        for (int i = 0; i < genManager.PastGenerations.Count; i++)
+        {
+            Console.Write("Generation " + genManager.PastGenerations[i].generationNumber
+                        + "\t|\tAverage fitness: " + genManager.PastGenerations[i].averageFitness
+                        + "\t|\tTotal fitness: " + genManager.PastGenerations[i].totalFitness
+                        + "\t|\tHighest fitness: " + genManager.PastGenerations[i].highestFitness
+                        + "\n");
+            //Console.Write("\tGeneration " + genManager.PastGenerations[i].generationNumber + ":\t" + genManager.PastGenerations[i].averageFitness
+            //    + "\t|\tTotal fitness: " + genManager.PastGenerations[i].totalFitness + "\n");
+        }
     }
     #endregion
 }
