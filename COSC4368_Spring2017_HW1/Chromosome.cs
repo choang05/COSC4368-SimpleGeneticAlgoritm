@@ -16,6 +16,7 @@ public class Chromosome
     }
 
     //  Evaluate the fitness value by calculating all the 1's in odd indexes and 0's in even indexes
+    #region GetFitnessValue()
     public int GetFitnessValue()
     {
         int fitnessValue = 0;
@@ -37,8 +38,10 @@ public class Chromosome
 
         return fitnessValue;
     }
+    #endregion
 
     //  Creates a random bit sequence for the chromosome
+    #region GenerateRandomBits()
     public void GenerateRandomBits()
     {
         Random random = new Random();
@@ -50,10 +53,13 @@ public class Chromosome
             Thread.Sleep(1);
         }
     }
+    #endregion
 
     //  Returns boolean if the given value is odd
+    #region IsOdd(int value)
     private bool IsOdd(int value)
     {
         return value % 2 != 0;
     }
+    #endregion
 }

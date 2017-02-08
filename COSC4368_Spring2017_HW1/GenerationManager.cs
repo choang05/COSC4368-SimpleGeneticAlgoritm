@@ -5,19 +5,30 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 
+//  Struct that contains two chromosome parents. Used for crossovers
 public struct ChromosomePair
 {
     public Chromosome parent1;
     public Chromosome parent2;
 }
 
+//  Strut that contains generation related data such as average fitness and chromosomes
+public struct GenerationData
+{
+    public Chromosome[] Chromosomes;
+    public int generationNumber;
+    public int highestFitness;
+    public float averageFitness;
+}
+
 public class GenerationManager
 {
     public Chromosome[] CurrentGen;
-    public List<object> PastGenerations = new List<object>();
+    public List<GenerationData> PastGenerations = new List<GenerationData>();
     public int GenerationCounter = 1;
 
     //  Default constructor
+    #region GenerationManager()
     public GenerationManager()
     {
         CurrentGen = new Chromosome[Program.PopulationSize];
@@ -30,47 +41,139 @@ public class GenerationManager
             CurrentGen[i].GenerateRandomBits();
         }
     }
+    #endregion
 
-    /*public ChromosomePair BasicSelection()
+    //  Creates a GenerationData structure that stores information of the generation such as chromosomes and average fitness
+    #region ArchiveGeneration()
+    public void ArchiveGeneration()
     {
-        ChromosomePair pair = new ChromosomePair();
-        int currentHighest = -1;
-        int secondHighest = -1;
+        //  Create a generation structure to hold all data related to the generation
+        GenerationData generation = new GenerationData();
+        generation.Chromosomes = CurrentGen;
+        generation.generationNumber = GenerationCounter;
 
-        for (int i = 0; i < Program.populationSize; i++)
+        //  Calculate average fitness
+        int totalFitness = 0;
+        for (int i = 0; i < Program.PopulationSize; i++)
+            totalFitness += CurrentGen[i].GetFitnessValue();
+        generation.averageFitness = (float)totalFitness / (float)Program.PopulationSize;
+
+        //  Calculate highest fitness
+        int currentHighestFitness = 0;
+        for (int i = 0; i < Program.PopulationSize; i++)
         {
-            Random r = new Random(Convert.ToInt32(DateTime.Now.Ticks % Int16.MaxValue));
-            int val = (CurrentGen[i].GetFitnessValue() + (r.Next() % 14));
-            if (val >= currentHighest)
-            {
-                pair.parent2 = pair.parent1;
-                pair.parent1 = CurrentGen[i];
-                secondHighest = currentHighest;
-                currentHighest = val;
-            }
+            int chromosomeFitnessValue = CurrentGen[i].GetFitnessValue();
+            if (chromosomeFitnessValue > currentHighestFitness)
+                currentHighestFitness = chromosomeFitnessValue;
+        }
+        generation.highestFitness = currentHighestFitness;
+
+        //  Add current generation into past generation list
+        PastGenerations.Add(generation);
+    }
+    #endregion
+
+    //  Iterate the current generation by generating a new population
+    #region IterateCurrentGeneration()
+    public void IterateCurrentGeneration()
+    {
+        //  Selection - using weighted probabilty, select chromosomes to crossover and replicate
+        List<Chromosome> chromosomesToCrossover = CurrentGen.ToList();
+        List<Chromosome> chromosomeToReplicate = new List<Chromosome>();
+
+        //  TEST
+        chromosomeToReplicate.Add(chromosomesToCrossover[19]);
+        chromosomeToReplicate.Add(chromosomesToCrossover[18]);
+        chromosomeToReplicate.Add(chromosomesToCrossover[17]);
+        chromosomeToReplicate.Add(chromosomesToCrossover[16]);
+        chromosomeToReplicate.Add(chromosomesToCrossover[15]);
+        chromosomeToReplicate.Add(chromosomesToCrossover[14]);
+        chromosomesToCrossover.RemoveRange(13, 6);
+
+        //  Print
+        //for (int i = 0; i < chromosomesToCrossover.Count; i++)
+        //    Console.Write("Chromosomes to crossover: " + chromosomesToCrossover[i].ChromosomeBits + "\n");
+        //Console.Write("\n");
+        //  Print
+        //for (int i = 0; i < chromosomeToReplicate.Count; i++)
+        //    Console.Write("Chromosomes to replicate: " + chromosomeToReplicate[i].ChromosomeBits + "\n");
+
+
+        //  If the crossoverChromosome list is odd in the case of an odd population size... 
+        //      transfer one chromosomeToReplicate to the crossoverChromosome list so there is a even pairing number
+        if (chromosomesToCrossover.Count % 2  != 0) 
+        {
+            chromosomesToCrossover.Add(chromosomeToReplicate[0]);
+            chromosomeToReplicate.RemoveAt(0);
         }
 
-        if (secondHighest == -1)
+        //  Crossover - perform and cache the crossover given chromosomesToCrossover list
+        List<Chromosome> crossoverChromosomes = CrossoverChromosomes(chromosomesToCrossover);
+
+        Console.Write("\n");
+        //  Print
+        //for (int i = 0; i < crossoverChromosomes.Count; i++)
+        //    Console.Write("Crossed over chromosomes: " + crossoverChromosomes[i].ChromosomeBits + "\n");
+
+        //  Mutation - Mutate a random chromosome in the current generation
+        MutateRandomChromosome();
+
+        //  Increment generation number
+        GenerationCounter++;
+    }
+    #endregion
+
+    //  Crossover all chromosomes in given list
+    #region CrossoverChromosomes(List<Chromosome> chromosomesToCrossover)
+    public List<Chromosome> CrossoverChromosomes(List<Chromosome> chromosomesToCrossover)
+    {
+        //  Create a return list to hold the crossovered chromosomes
+        List<Chromosome> crossoverChromosomes = new List<Chromosome>();
+
+        //  Create a list of avaliable chromosomes for crossing over
+        List<Chromosome> avaliableToCrossover = new List<Chromosome>();
+        avaliableToCrossover = chromosomesToCrossover;
+
+        //  Loop and crossover parents from the avaliableToCrossover list until there are no more parents to cross over
+        Random random = new Random();
+        while (avaliableToCrossover.Count > 0)
         {
-            return BasicSelection();
+            //  Create parent pair from randomly select parents, remove them from avaliable list, and perform crossover
+            ChromosomePair parents;
+
+            parents.parent1 = avaliableToCrossover[random.Next(0, avaliableToCrossover.Count)];
+            avaliableToCrossover.Remove(parents.parent1);
+            Thread.Sleep(1);    //  Since each instance of random is being generated at the same time, we need to sleep to avoid duplicate randoms
+
+            parents.parent2 = avaliableToCrossover[random.Next(0, avaliableToCrossover.Count)];
+            avaliableToCrossover.Remove(parents.parent2);
+            Thread.Sleep(1);    //  Since each instance of random is being generated at the same time, we need to sleep to avoid duplicate randoms
+
+            ChromosomePair children = CrossoverChromosomePair(parents);
+
+            //  add crossover chromosome children to the crossoverChromosome list
+            crossoverChromosomes.Add(children.parent1);
+            crossoverChromosomes.Add(children.parent2);
         }
 
-        return pair;
-    }*/
+        return crossoverChromosomes;
+    }
+    #endregion
 
     //  Crossover chromosome parents using single-point crossover
-    public ChromosomePair CrossoverChromosomes(ChromosomePair parents)
+    #region CrossoverChromosomePair(ChromosomePair parents)
+    public ChromosomePair CrossoverChromosomePair(ChromosomePair parents)
     {
         ChromosomePair newParents = parents;
 
-        Console.Write("Parent 1:\t" + parents.parent1.ChromosomeBits + "\n");
-        Console.Write("Parent 2:\t" + parents.parent2.ChromosomeBits + "\n\n");
+        //Console.Write("Parent 1:\t" + parents.parent1.ChromosomeBits + "\n");
+        //Console.Write("Parent 2:\t" + parents.parent2.ChromosomeBits + "\n\n");
 
         string parent1RightBits = parents.parent1.ChromosomeBits.Substring(parents.parent1.ChromosomeBits.Length / 2, parents.parent1.ChromosomeBits.Length / 2);
         string parent2RightBits = parents.parent2.ChromosomeBits.Substring(parents.parent2.ChromosomeBits.Length / 2, parents.parent2.ChromosomeBits.Length / 2);
 
-        Console.Write("Parent 1 right bits:\t" + parent1RightBits + "\n");
-        Console.Write("Parent 2 right bits:\t" + parent2RightBits + "\n\n");
+        //Console.Write("Parent 1 right bits:\t" + parent1RightBits + "\n");
+        //Console.Write("Parent 2 right bits:\t" + parent2RightBits + "\n\n");
 
         //  Swap the parent1's right half bits with parent2's right half bits
         var sb1 = new StringBuilder(parents.parent1.ChromosomeBits);
@@ -84,57 +187,15 @@ public class GenerationManager
         sb2.Insert(parents.parent2.ChromosomeBits.Length / 2, parent1RightBits);
         newParents.parent2.ChromosomeBits = sb2.ToString();
 
-        Console.Write("New parent 1:\t" + newParents.parent1.ChromosomeBits + "\n");
-        Console.Write("New parent 2:\t" + newParents.parent2.ChromosomeBits + "\n");
+        //Console.Write("New parent 1:\t" + newParents.parent1.ChromosomeBits + "\n");
+        //Console.Write("New parent 2:\t" + newParents.parent2.ChromosomeBits + "\n");
 
         return newParents;
     }
-
-    /*private Chromosome GenerateChild(ChromosomePair pair)
-    {
-        Byte[] parentOneArray = getByteArrayFromString(pair.parent1.ChromosomeBits);
-        Byte[] parentTwoArray = getByteArrayFromString(pair.parent2.ChromosomeBits);
-        Chromosome chromosome = new Chromosome();
-
-        for (int i = 0; i < parentOneArray.Length; i++)
-        {
-            parentOneArray[i] = (byte)(parentOneArray[i] | parentTwoArray[i]);
-        }
-
-        chromosome.ChromosomeBits = getStringFromByteArray(parentOneArray);
-        return chromosome;
-    }
-
-    private byte[] getByteArrayFromString(string p)
-    {
-        List<byte> ret = new List<byte>();
-        foreach (Char c in p)
-        {
-            if (c == '1')
-            {
-                ret.Add(1);
-            }
-            else
-            {
-                ret.Add(0);
-            }
-        }
-        return ret.ToArray();
-    }
-
-    private string getStringFromByteArray(byte[] p)
-    {
-        string a = string.Empty;
-
-        foreach (byte c in p)
-        {
-            a += c;
-        }
-
-        return a;
-    }*/
+    #endregion
 
     //  Randomly selects a chromosome from the current generation and flips a random bit within the chromosome
+    #region MutateRandomChromosome()
     public void MutateRandomChromosome()
     {
         Random random = new Random();
@@ -147,7 +208,7 @@ public class GenerationManager
         //  Since each instance of random is being generated at the same time, we need to sleep to avoid duplicate randoms
         Thread.Sleep(1);
 
-        Console.Write("Chromosome to mutate:\t" + CurrentGen[randomChromosomeIndex].ChromosomeBits + "\n");
+        //Console.Write("Chromosome to mutate:\t" + CurrentGen[randomChromosomeIndex].ChromosomeBits + "\n");
 
         //  Select a random bit in the chromosome to flip
         int randomBitIndex = random.Next(0, Program.ChromosomeBitLength);
@@ -172,60 +233,9 @@ public class GenerationManager
         }
         CurrentGen[randomChromosomeIndex].ChromosomeBits = sb.ToString();
 
-        Console.Write("New mutated chromosome:\t" + CurrentGen[randomChromosomeIndex].ChromosomeBits + "\n");
+        //Console.Write("New mutated chromosome:\t" + CurrentGen[randomChromosomeIndex].ChromosomeBits + "\n");
     }
-
-    /*public void IterateGeneration()
-    {
-        Chromosome[] Gen = CurrentGen;
-
-        foreach (Chromosome c in Gen)
-        {
-            Console.WriteLine(c.ChromosomeBits + " " + c.GetFitnessValue());
-        }
-
-        Console.WriteLine("Pair Matches"); List<ChromosomePair> pairs = new List<ChromosomePair>();
-
-        foreach (Chromosome c in Gen)
-        {
-            ChromosomePair pair = manager.BasicSelection(); pairs.Add(pair);
-            Console.WriteLine(pair.parent1.ChromosomeString + " " + pair.parent2.ChromosomeString);
-        }
-
-        Console.WriteLine("First Generation Before mutation Childrens");
-        List<Chromosome> nextgen = new List<Chromosome>();
-        foreach (ChromosomePair p in pairs)
-        {
-            ChromosomePair pair = Crossover(p);
-            if (pair.parent2 == null)
-            {
-                Console.WriteLine(pair.parent1.ChromosomeBits);
-                nextgen.Add(pair.parent1);
-            }
-            else
-            {
-                Console.WriteLine(pair.parent1.ChromosomeBits + " " + pair.parent2.ChromosomeBits);
-                nextgen.Add(pair.parent1); nextgen.Add(pair.parent2);
-            }
-        }
-
-        if (nextgen.Count > 4)
-        {
-            nextgen.RemoveRange(3, nextgen.Count - 1 - 3);
-        }
-
-        //Run mutations
-        Console.WriteLine("First Generation After Mutation Childrens");
-
-        for (int i = 0; i < nextgen.Count; i++)
-        {
-            nextgen[i] = manager.Mutate(nextgen[i]);
-            Console.WriteLine(nextgen[i].ChromosomeString);
-        }
-
-        PastGenerations.Add(CurrentGen);
-        CurrentGen = nextgen.ToArray();
-    }*/
+    #endregion
 }
 
 
