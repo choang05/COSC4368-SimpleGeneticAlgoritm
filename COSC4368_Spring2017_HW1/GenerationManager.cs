@@ -117,15 +117,6 @@ public class GenerationManager
             chromosomeToReplicate.Remove(weightMap[randomIndex]);
         }
 
-        //  Print crossover
-        /*for (int i = 0; i < chromosomesToCrossover.Count; i++)
-            Console.Write("("+i+") Chromosomes to crossover: " + chromosomesToCrossover[i].ChromosomeBits + "\t Fitness:\t" + chromosomesToCrossover[i].FitnessValue + "\n");
-        Console.Write("\n");*/
-        //  Print replicates
-        /*for (int i = 0; i < chromosomeToReplicate.Count; i++)
-            Console.Write("(" + i + ") Chromosomes to replicate: " + chromosomeToReplicate[i].ChromosomeBits + "\n");
-        */
-
         //  If the crossoverChromosome list is odd in the case of an odd population size... 
         //      transfer one chromosomeToReplicate to the crossoverChromosome list so there is a even pairing number
         if (chromosomesToCrossover.Count % 2  != 0) 

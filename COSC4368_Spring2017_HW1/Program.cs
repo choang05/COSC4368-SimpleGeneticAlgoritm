@@ -11,7 +11,7 @@ class Program
     public static int ChromosomeBitLength = 10;
     public static string TargetChromosomeBits = "1010101010";
     public static int TargetFitnessValue = 10;
-    public static float CrossoverPercentage = 0.30f;
+    public static float CrossoverPercentage = 0.00f;
 
     public static void Main(string[] args)
     {
@@ -80,10 +80,7 @@ class Program
     static void PrintGenerationResults(GenerationManager genManager, int genNumber)
     {
         Console.Write("\n[Generation " + genManager.PastGenerations[genNumber].generationNumber +"]"+ "\n\n");
-        /*+ "\t|\tAverage fitness: " + genManager.PastGenerations[genNumber].averageFitness
-        + "\t|\tTotal fitness: " + genManager.PastGenerations[genNumber].totalFitness
-        + "\t|\tHighest fitness: " + genManager.PastGenerations[genNumber].highestFitness
-        + "\n\n");*/
+
         for (int j = 0; j < genManager.PastGenerations[genNumber].chromosomes.Length; j++)
         {
             Console.WriteLine("\t" + "Chromosome " + (j) + ":\t" + genManager.PastGenerations[genNumber].chromosomes[j].ChromosomeBits + "\t|\tFitness: " + genManager.PastGenerations[genNumber].chromosomes[j].FitnessValue);
@@ -92,24 +89,18 @@ class Program
     }
     #endregion
 
+    //  Print statistics on all generations
     #region PrintCompletedResults(GenerationManager genManager, int targetIndex)
     static void PrintCompletedResults(GenerationManager genManager, int targetIndex)
     {
-        /*Console.Write("\n[Results]:" + "\n\n"
-            + "\tGenerations till target chromosome: \t" + genManager.GenerationCounter + "\n"
-            + "\tTarget chromosome's number:\t\t" + targetIndex + "\n"
-            + "\tTarget chromosome's fitness:\t\t" + genManager.CurrentGen[targetIndex].FitnessValue + "\n\n");
-*/
         Console.Write("\n[Results]:" + "\n\n");
         for (int i = 0; i < genManager.PastGenerations.Count; i++)
         {
-            Console.Write("Generation " + genManager.PastGenerations[i].generationNumber
+            Console.Write("\tGeneration " + genManager.PastGenerations[i].generationNumber
                         + "\t|\tAverage fitness: " + genManager.PastGenerations[i].averageFitness
                         + "\t|\tTotal fitness: " + genManager.PastGenerations[i].totalFitness
                         + "\t|\tHighest fitness: " + genManager.PastGenerations[i].highestFitness
                         + "\n");
-            //Console.Write("\tGeneration " + genManager.PastGenerations[i].generationNumber + ":\t" + genManager.PastGenerations[i].averageFitness
-            //    + "\t|\tTotal fitness: " + genManager.PastGenerations[i].totalFitness + "\n");
         }
     }
     #endregion
