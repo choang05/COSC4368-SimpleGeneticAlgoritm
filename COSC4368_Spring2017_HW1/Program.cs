@@ -11,7 +11,7 @@ class Program
     public static int ChromosomeBitLength = 10;
     public static string TargetChromosomeBits = "1010101010";
     public static int TargetFitnessValue = 10;
-    public static float CrossoverPercentage = 0.00f;
+    public static float CrossoverPercentage = 0.90f;
 
     public static void Main(string[] args)
     {

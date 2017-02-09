@@ -109,7 +109,8 @@ public class GenerationManager
             {
                 //  Select random index from weight map
                 randomIndex = random.Next(0, weightMap.Count);
-                Thread.Sleep(1);    //  Since each instance of random is being generated at the same time, we need to sleep to avoid duplicate randoms
+                //Console.Write("\n random index: " + randomIndex);
+                //Thread.Sleep(1);    //  Since each instance of random is being generated at the same time, we need to sleep to avoid duplicate randoms
             } while (chromosomesToCrossover.Contains(weightMap[randomIndex]));
 
             //  Add chromosome of that random index into the crossover list && remove the chromosome from the replication list
