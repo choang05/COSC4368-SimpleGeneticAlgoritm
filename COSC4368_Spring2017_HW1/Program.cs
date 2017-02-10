@@ -11,17 +11,12 @@ class Program
     public static int ChromosomeBitLength = 10;
     public static string TargetChromosomeBits = "1010101010";
     public static int TargetFitnessValue = 10;
-    public static float CrossoverPercentage = 0.90f;
+    public static float CrossoverPercentage = 0.70f;
 
     public static void Main(string[] args)
     {
         //  Print initial conditions
-        Console.WriteLine("[User-defined Parameters]" + "\n"
-            + "Population size:\t\t" + PopulationSize + "\n"
-            + "Chromosome Bit Length:\t\t" + ChromosomeBitLength + "\n"
-            + "Target chromosome:\t\t" + TargetChromosomeBits + "\n"
-            + "Target chromosome fitness:\t" + TargetFitnessValue + "\n"
-            + "Crossover probability:\t\t" + CrossoverPercentage*100 + "%\n");
+        PrintInitialConditions();
 
         //  Initialize generation manager
         GenerationManager genManager = new GenerationManager();
@@ -29,7 +24,7 @@ class Program
         //  Loop generation iteration until target is found
         bool targetFound = false;
         while (!targetFound)
-        //for (int k = 0; k < 3; k++)
+        //for (int k = 0; k < 2; k++)
         {
             //  Archive the current generationC
             genManager.ArchiveCurrentGeneration();
@@ -102,6 +97,19 @@ class Program
                         + "\t|\tHighest fitness: " + genManager.PastGenerations[i].highestFitness
                         + "\n");
         }
+    }
+    #endregion
+
+    //  Print initial conditions
+    #region PrintInitialConditions()
+    static void PrintInitialConditions()
+    {
+        Console.WriteLine("[User-defined Parameters]" + "\n"
+            + "Population size:\t\t" + PopulationSize + "\n"
+            + "Chromosome Bit Length:\t\t" + ChromosomeBitLength + "\n"
+            + "Target chromosome:\t\t" + TargetChromosomeBits + "\n"
+            + "Target chromosome fitness:\t" + TargetFitnessValue + "\n"
+            + "Crossover probability:\t\t" + CrossoverPercentage * 100 + "%\n");
     }
     #endregion
 }

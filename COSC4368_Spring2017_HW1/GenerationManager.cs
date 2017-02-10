@@ -133,8 +133,18 @@ public class GenerationManager
         //  Update the current generation with the newly created crossoverChromosomes list and replication list
         CurrentGen = crossoverChromosomes.Concat(chromosomeToReplicate).ToArray();
 
+        //  print population after crossover
+        //Console.Write("population after crossover\n");
+        //for (int i = 0; i < CurrentGen.Length; i++)
+        //    Console.Write(CurrentGen[i].ChromosomeBits + "\n");
+
         //  Mutation - Mutate a random chromosome in the current generation
         MutateRandomChromosome();
+
+        //  print population after mutation
+        //Console.Write("population after mutation\n");
+        //for (int i = 0; i < CurrentGen.Length; i++)
+        //    Console.Write(CurrentGen[i].ChromosomeBits + "\n");
 
         //  Re-Evaluate all chromosomes fitness value
         foreach (Chromosome chromosome in CurrentGen)
