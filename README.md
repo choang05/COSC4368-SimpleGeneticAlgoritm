@@ -7,6 +7,7 @@ Generate randomly 20 chromosomes with 10 bits containing 1’s and 0’s only. I
 an example 1011010111:
 
 1 2 3 4 5 6 7 8 9 10
+
 1 0 1 1 0 1 0 1 1 1
 
 It has only one 0’s at even bits (2nd bit) and has three 1’s at odd bits (1st,3rd and 9th).
