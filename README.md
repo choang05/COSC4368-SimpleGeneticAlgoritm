@@ -1,9 +1,9 @@
 # COSC4368-SimpleGeneticAlgoritm
 COSC 4368: Artificial Intelligence Programming - Spring 2017 - HW1
 
-Part 1 : Experiment 1:
+Part 1 : 
 
-Generate randomly 20 chromosomes with 10 bits containing 1’s and 0’s only. Implement a simple genetic algorithm to find the string 1010101010. Let the fitness function f(x) be the number of 1’s in odd bits and the number of 0’s at even bits. As
+Experiment 1: Generate randomly 20 chromosomes with 10 bits containing 1’s and 0’s only. Implement a simple genetic algorithm to find the string 1010101010. Let the fitness function f(x) be the number of 1’s in odd bits and the number of 0’s at even bits. As
 an example 1011010111:
 
 1 2 3 4 5 6 7 8 9 10
